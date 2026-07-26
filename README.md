@@ -1,1 +1,0 @@
-# ticket-selling-system
