@@ -6,6 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using ticket_selling_backend.Data;
 using ticket_selling_backend.Entities;
 using ticket_selling_backend.Services;
+using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,7 +26,8 @@ builder.Services.AddIdentity<UserEntity, RoleEntity>(options =>
     options.User.RequireUniqueEmail = true;
 })
 .AddEntityFrameworkStores<ApplicationDbContext>()
-.AddDefaultTokenProviders();
+.AddDefaultTokenProviders()
+.AddErrorDescriber<SpanishIdentityErrorDescriber>(); // Mensajes de error en español
 
 // Configura autenticacion con JWT Bearer
 var jwtSettings = builder.Configuration.GetSection("JWT");
@@ -67,9 +69,12 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 
 var app = builder.Build();
 
-// Crea los roles Admin y User si no existen
+// Crea los roles Admin y User si no existen, y aplica migraciones pendientes
 using (var scope = app.Services.CreateScope())
 {
+    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    await dbContext.Database.MigrateAsync(); // Autocrea la base de datos y aplica migraciones
+
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<RoleEntity>>();
     foreach (var role in new[] { "Admin", "User" })
     {
@@ -79,7 +84,10 @@ using (var scope = app.Services.CreateScope())
 }
 
 if (app.Environment.IsDevelopment())
+{
     app.MapOpenApi();
+    app.MapScalarApiReference();
+}
 
 app.UseHttpsRedirection();
 app.UseCors("AllowFrontend");
