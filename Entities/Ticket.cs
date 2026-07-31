@@ -1,11 +1,10 @@
 namespace ticket_selling_backend.Entities;
 
-public class Ticket
+public class Ticket : BaseEntity
 {
-    public int Id { get; set; }
     public int EventId { get; set; }
     public Event? Event { get; set; }
-    public int UserId { get; set; }
-    public User? User { get; set; }
+    public string UserId { get; set; } = string.Empty;
+    public UserEntity? User { get; set; }
     public DateTime PurchaseDate { get; set; }
 }

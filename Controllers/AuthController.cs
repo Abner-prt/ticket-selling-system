@@ -21,9 +21,9 @@ public class AuthController : ControllerBase
         var (success, user, token, error) = await _authService.RegisterAsync(dto);
 
         if (!success)
-            return BadRequest(new { statusCode = 400, message = error, status = "error", data = (object?)null });
+            return BadRequest(ResponseDto<object>.Failure(error ?? "Error en registro", 400));
 
-        return Ok(new { statusCode = 200, message = "Registro exitoso", status = "success", data = new { user, token } });
+        return Ok(ResponseDto<object>.Success(new { user, token }, "Registro exitoso", 200));
     }
 
     [HttpPost("login")]
@@ -32,9 +32,9 @@ public class AuthController : ControllerBase
         var (success, user, token, error) = await _authService.LoginAsync(dto);
 
         if (!success)
-            return Unauthorized(new { statusCode = 401, message = error, status = "error", data = (object?)null });
+            return Unauthorized(ResponseDto<object>.Failure(error ?? "Credenciales inválidas", 401));
 
-        return Ok(new { statusCode = 200, message = "Login exitoso", status = "success", data = new { user, token } });
+        return Ok(ResponseDto<object>.Success(new { user, token }, "Login exitoso", 200));
     }
 
     // Renueva el access token usando el refresh token
@@ -44,8 +44,8 @@ public class AuthController : ControllerBase
         var (success, token, error) = await _authService.RefreshTokenAsync(dto.RefreshToken);
 
         if (!success)
-            return Unauthorized(new { statusCode = 401, message = error, status = "error", data = (object?)null });
+            return Unauthorized(ResponseDto<object>.Failure(error ?? "Token inválido", 401));
 
-        return Ok(new { statusCode = 200, message = "Token renovado", status = "success", data = token });
+        return Ok(ResponseDto<TokenDto>.Success(token!, "Token renovado", 200));
     }
 }
