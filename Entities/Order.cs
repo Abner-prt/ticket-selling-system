@@ -6,7 +6,7 @@ public class Order : BaseEntity
     public UserEntity? User { get; set; }
     
     public decimal TotalAmount { get; set; }
-    public string PaymentStatus { get; set; } = "Pending"; // Pending, Completed, Failed
+    public string PaymentStatus { get; set; } = "Pending"; // TODO Pending, Completed, Failed
     public string? StripeSessionId { get; set; }
     
     public List<OrderItem> Items { get; set; } = new();

@@ -30,7 +30,7 @@ public static class EventMappers
             Location = eventDto.Location,
             Price = eventDto.Price,
             TotalTickets = eventDto.TotalTickets,
-            AvailableTickets = eventDto.TotalTickets // Al inicio, disponibles = totales
+            AvailableTickets = eventDto.TotalTickets // TODOAl inicio, disponibles = totales
         };
     }
 }
