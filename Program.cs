@@ -9,6 +9,7 @@ using ticket_selling_backend.Services;
 using Scalar.AspNetCore;
 using ticket_selling_backend.Services.Categories;
 using ticket_selling_backend.Services.Events;
+using ticket_selling_backend.Services.Orders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -71,7 +72,9 @@ builder.Services.AddCors(options =>
 
 // Registra el servicio de autenticacion y Stripe
 builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<StripeService>();
+builder.Services.AddTransient<ICategoryService, CategoryService>();
+builder.Services.AddTransient<IEventService, EventService>();
+builder.Services.AddTransient<IOrderService, OrderService>();
 
 var app = builder.Build();
 
