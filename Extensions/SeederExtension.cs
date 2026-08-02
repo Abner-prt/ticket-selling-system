@@ -46,7 +46,7 @@ public static class SeederExtension
                 EmailConfirmed = true,
             };
 
-            var result = await userManager.CreateAsync(adminUser, "Admin123!");
+            var result = await userManager.CreateAsync(adminUser, "Admin123");
 
             if (result.Succeeded)
             {

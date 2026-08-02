@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ticket_selling_backend.Dtos.Events;
 using ticket_selling_backend.Services.Events;
@@ -29,6 +30,7 @@ public class EventController : ControllerBase
         return StatusCode(result.StatusCode, result);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<ActionResult> Create(EventCreateDto dto)
     {
@@ -36,6 +38,7 @@ public class EventController : ControllerBase
         return StatusCode(result.StatusCode, result);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPut("{id}")]
     public async Task<ActionResult> Update(int id, EventEditDto dto)
     {
@@ -43,6 +46,7 @@ public class EventController : ControllerBase
         return StatusCode(result.StatusCode, result);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpDelete("{id}")]
     public async Task<ActionResult> Delete(int id)
     {
