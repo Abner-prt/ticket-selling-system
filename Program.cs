@@ -70,7 +70,7 @@ builder.Services.AddCors(options =>
               .AllowAnyMethod());
 });
 
-// Registra el servicio de autenticacion
+// Registra el servicio de autenticacion y Stripe
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddTransient<ICategoryService, CategoryService>();
 builder.Services.AddTransient<IEventService, EventService>();
