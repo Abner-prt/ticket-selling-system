@@ -7,6 +7,8 @@ using ticket_selling_backend.Data;
 using ticket_selling_backend.Entities;
 using ticket_selling_backend.Services;
 using Scalar.AspNetCore;
+using ticket_selling_backend.Services.Categories;
+using ticket_selling_backend.Services.Events;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -59,7 +61,10 @@ builder.Services.AddAuthorization();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
-        policy.WithOrigins("http://localhost:5173")
+        policy.WithOrigins(
+                "http://localhost:5173", "http://127.0.0.1:5173",
+                "http://localhost:5174", "http://127.0.0.1:5174"
+              )
               .AllowAnyHeader()
               .AllowAnyMethod());
 });

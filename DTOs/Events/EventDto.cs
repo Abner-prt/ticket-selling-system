@@ -1,7 +1,8 @@
-namespace ticket_selling_backend.Entities;
+namespace ticket_selling_backend.Dtos.Events;
 
-public class Event : BaseEntity
+public class EventDto
 {
+    public int Id { get; set; }
     public string Title { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
     public DateTime Date { get; set; }
@@ -11,5 +12,5 @@ public class Event : BaseEntity
     public int AvailableTickets { get; set; }
     
     public int CategoryId { get; set; }
-    public Category? Category { get; set; }
+    public string CategoryName { get; set; } = string.Empty;
 }

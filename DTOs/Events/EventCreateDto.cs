@@ -1,15 +1,21 @@
-namespace ticket_selling_backend.Entities;
+using System.ComponentModel.DataAnnotations;
 
-public class Event : BaseEntity
+namespace ticket_selling_backend.Dtos.Events;
+
+public class EventCreateDto
 {
+    [Required]
     public string Title { get; set; } = string.Empty;
+    [Required]
     public string Description { get; set; } = string.Empty;
+    [Required]
     public DateTime Date { get; set; }
+    [Required]
     public string Location { get; set; } = string.Empty;
+    [Required]
     public decimal Price { get; set; }
+    [Required]
     public int TotalTickets { get; set; }
-    public int AvailableTickets { get; set; }
-    
+    [Required]
     public int CategoryId { get; set; }
-    public Category? Category { get; set; }
 }

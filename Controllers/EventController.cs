@@ -1,37 +1,56 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using ticket_selling_backend.Data;
-using ticket_selling_backend.DTOs;
-using ticket_selling_backend.Mappers;
+using ticket_selling_backend.Dtos.Events;
+using ticket_selling_backend.Services.Events;
 
 namespace ticket_selling_backend.Controllers;
 
+[Route("api/event")]
 [ApiController]
-[Route("api/events")]
 public class EventController : ControllerBase
 {
-    private readonly ApplicationDbContext _context;
+    private readonly IEventService _eventService;
 
-    public EventController(ApplicationDbContext context)
+    public EventController(IEventService eventService)
     {
-        _context = context;
+        _eventService = eventService;
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetEvents()
+    public async Task<ActionResult> GetPage(string searchTerm = "", int page = 1, int pageSize = 10)
     {
-        var events = await _context.Events.ToListAsync();
-        var dtos = events.Select(e => e.ToDto()).ToList();
-        return Ok(ResponseDto<object>.Success(dtos, "Eventos obtenidos exitosamente"));
+        var response = await _eventService.GetPageAsync(searchTerm, page, pageSize);
+        return StatusCode(response.StatusCode, response);
     }
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetEvent(int id)
+    public async Task<ActionResult> GetOne(int id)
     {
-        var evt = await _context.Events.FindAsync(id);
-        if (evt == null)
-            return NotFound(ResponseDto<object>.Failure("Evento no encontrado", 404));
+        var result = await _eventService.GetOneByIdAsync(id);
+        return StatusCode(result.StatusCode, result);
+    }
 
-        return Ok(ResponseDto<EventDto>.Success(evt.ToDto(), "Evento obtenido"));
+    [Authorize(Roles = "Admin")]
+    [HttpPost]
+    public async Task<ActionResult> Create(EventCreateDto dto)
+    {
+        var result = await _eventService.CreateAsync(dto);
+        return StatusCode(result.StatusCode, result);
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpPut("{id}")]
+    public async Task<ActionResult> Update(int id, EventEditDto dto)
+    {
+        var result = await _eventService.EditAsync(id, dto);
+        return StatusCode(result.StatusCode, result);
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> Delete(int id)
+    {
+        var result = await _eventService.DeleteAsync(id);
+        return StatusCode(result.StatusCode, result);
     }
 }
