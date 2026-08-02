@@ -64,8 +64,9 @@ builder.Services.AddCors(options =>
               .AllowAnyMethod());
 });
 
-// Registra el servicio de autenticacion
+// Registra el servicio de autenticacion y Stripe
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<StripeService>();
 
 var app = builder.Build();
 
