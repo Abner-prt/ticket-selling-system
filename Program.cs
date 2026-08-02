@@ -7,6 +7,8 @@ using ticket_selling_backend.Data;
 using ticket_selling_backend.Entities;
 using ticket_selling_backend.Services;
 using Scalar.AspNetCore;
+using ticket_selling_backend.Services.Categories;
+using ticket_selling_backend.Services.Events;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -69,6 +71,8 @@ builder.Services.AddCors(options =>
 
 // Registra el servicio de autenticacion
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddTransient<ICategoryService, CategoryService>();
+builder.Services.AddTransient<IEventService, EventService>();
 
 var app = builder.Build();
 
