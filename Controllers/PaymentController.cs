@@ -1,37 +1,37 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ticket_selling_backend.Services;
+using Stripe;
 
 namespace ticket_selling_backend.Controllers;
 
 [Route("api/payments")]
 [ApiController]
-[Authorize] // Requires login
 public class PaymentController : ControllerBase
 {
-    private readonly StripeService _stripeService;
-
-    public PaymentController(StripeService stripeService)
-    {
-        _stripeService = stripeService;
-    }
-
     [HttpPost("create-intent")]
-    public async Task<IActionResult> CreatePaymentIntent([FromBody] PaymentIntentRequestDto request)
+    public ActionResult CreatePaymentIntent([FromBody] PaymentIntentCreateRequest request)
     {
         try
         {
-            var paymentIntent = await _stripeService.CreatePaymentIntentAsync(request.Amount);
-            return Ok(new { clientSecret = paymentIntent.ClientSecret });
+            var options = new PaymentIntentCreateOptions
+            {
+                Amount = request.Amount,
+                Currency = "hnl",
+                PaymentMethodTypes = new List<string> { "card" },
+            };
+            
+            var service = new PaymentIntentService();
+            var intent = service.Create(options);
+            
+            return Ok(new { clientSecret = intent.ClientSecret });
         }
-        catch (Exception ex)
+        catch (StripeException e)
         {
-            return BadRequest(new { error = ex.Message });
+            return BadRequest(new { message = e.StripeError.Message });
         }
     }
 }
 
-public class PaymentIntentRequestDto
+public class PaymentIntentCreateRequest
 {
     public long Amount { get; set; }
 }

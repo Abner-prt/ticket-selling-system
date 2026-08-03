@@ -10,6 +10,7 @@ using Scalar.AspNetCore;
 using ticket_selling_backend.Services.Categories;
 using ticket_selling_backend.Services.Events;
 using ticket_selling_backend.Services.Orders;
+using ticket_selling_backend.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -76,20 +77,14 @@ builder.Services.AddTransient<ICategoryService, CategoryService>();
 builder.Services.AddTransient<IEventService, EventService>();
 builder.Services.AddTransient<IOrderService, OrderService>();
 
+Stripe.StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
+
 var app = builder.Build();
 
-// Crea los roles Admin y User si no existen, y aplica migraciones pendientes
 using (var scope = app.Services.CreateScope())
 {
-    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    await dbContext.Database.MigrateAsync(); // Autocrea la base de datos y aplica migraciones
-
-    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<RoleEntity>>();
-    foreach (var role in new[] { "Admin", "User" })
-    {
-        if (!await roleManager.RoleExistsAsync(role))
-            await roleManager.CreateAsync(new RoleEntity { Name = role });
-    }
+    // Ejecutamos nuestro Seeder completo (migraciones, roles, categorías y eventos)
+    await scope.ServiceProvider.SeedRolesAndDataAsync();
 }
 
 if (app.Environment.IsDevelopment())

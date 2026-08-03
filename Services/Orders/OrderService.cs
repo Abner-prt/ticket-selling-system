@@ -30,7 +30,7 @@ public class OrderService : IOrderService
             {
                 UserId = userId,
                 TotalAmount = 0,
-                PaymentStatus = "Completed", // Hardcoded for this phase
+                PaymentStatus = "Completado", // Estado quemado para esta fase
                 Items = new List<OrderItem>()
             };
 
